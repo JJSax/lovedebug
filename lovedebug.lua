@@ -143,7 +143,7 @@ _Debug.onTop = function()
 		love.graphics.rectangle('fill',0,1,love.graphics.getWidth()/2,2+ 5*((#p-1) > -1 and #p-1 or 0) + #p*_Debug.Font:getHeight())
 		love.graphics.setColor(255, 255, 255, 255)
 		for i,v in ipairs(p) do
-			love.graphics.print(v[1], 5, 2+ 5*(i-1) + (i-1)*_Debug.Font:getHeight())
+			love.graphics.print(v[1] or "", 5, 2+ 5*(i-1) + (i-1)*_Debug.Font:getHeight())
 		end
 	end
 	if e then
@@ -153,7 +153,7 @@ _Debug.onTop = function()
 		love.graphics.rectangle('fill',love.graphics.getWidth()/2,1,love.graphics.getWidth()/2,2+ 5*((#e-1) > -1 and #e-1 or 0) + #e*_Debug.Font:getHeight())
 		love.graphics.setColor(255/255, 255/255, 255/255, 255/255)
 		for i,v in ipairs(e) do
-			love.graphics.print(v[1], love.graphics.getWidth()/2+5, 2+ 5*(i-1) + (i-1)*_Debug.Font:getHeight())
+			love.graphics.print(v[1] or "", love.graphics.getWidth()/2+5, 2+ 5*(i-1) + (i-1)*_Debug.Font:getHeight())
 		end
 	end
 	love.graphics.setScissor()
