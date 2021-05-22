@@ -27,11 +27,11 @@ local _Debug = {
 	Proposals = {},
 	ProposalLocation = _G;
 	Proposal_String = "",
-	
+
 	trackKeys = {},
 	keyRepeatInterval = 0.05,
 	keyRepeatDelay = 0.4,
-	
+
 	liveOutput='',
 	liveLastModified= love.filesystem.getInfo("main.lua").modtime,
 	liveDo=false
@@ -43,7 +43,7 @@ _DebugSettings = {
 	OverlayColor = {0, 0, 0},
 
 	DrawOnTop = true,
-	
+
 	LiveAuto = false,
 	LiveFile = 'main.lua',
 	LiveReset = false,
@@ -128,20 +128,20 @@ _Debug.onTop = function()
 		end
 	end
 	if #p > 0 then
-		love.graphics.setColor(127/255, 127/255, 127/255, 255/255)
+		love.graphics.setColor(0.5, 0.5, 0.5, 1)
 		love.graphics.rectangle('fill', 0, 0, love.graphics.getWidth()/2, 2)
 	end
-	if #e > 0 then 
-		love.graphics.setColor(255/255, 0, 0, 255/255)
+	if #e > 0 then
+		love.graphics.setColor(1, 0, 0, 1)
 		love.graphics.rectangle('fill', love.graphics.getWidth()/2, 0, love.graphics.getWidth()/2, 2)
 	end
 
 	if p then
 		--draw prints
 		love.graphics.setScissor(0,0,love.graphics.getWidth()/2,2+ 5*((#p-1) > -1 and #p-1 or 0) + #p*_Debug.Font:getHeight())
-		love.graphics.setColor(127/255, 127/255, 127/255, 64/255)
+		love.graphics.setColor(0.5, 0.5, 0.5, 0.251)
 		love.graphics.rectangle('fill',0,1,love.graphics.getWidth()/2,2+ 5*((#p-1) > -1 and #p-1 or 0) + #p*_Debug.Font:getHeight())
-		love.graphics.setColor(255, 255, 255, 255)
+		love.graphics.setColor(1, 1, 1, 1)
 		for i,v in ipairs(p) do
 			love.graphics.print(v[1], 5, 2+ 5*(i-1) + (i-1)*_Debug.Font:getHeight())
 		end
@@ -149,9 +149,9 @@ _Debug.onTop = function()
 	if e then
 		--draw errors
 		love.graphics.setScissor(love.graphics.getWidth()/2,0,love.graphics.getWidth()/2,2+ 5*((#e-1) > -1 and #e-1 or 0) + #e*_Debug.Font:getHeight())
-		love.graphics.setColor(255, 0, 0, 64)
+		love.graphics.setColor(1, 0, 0, 0.25)
 		love.graphics.rectangle('fill',love.graphics.getWidth()/2,1,love.graphics.getWidth()/2,2+ 5*((#e-1) > -1 and #e-1 or 0) + #e*_Debug.Font:getHeight())
-		love.graphics.setColor(255/255, 255/255, 255/255, 255/255)
+		love.graphics.setColor(1, 1, 1, 1)
 		for i,v in ipairs(e) do
 			love.graphics.print(v[1], love.graphics.getWidth()/2+5, 2+ 5*(i-1) + (i-1)*_Debug.Font:getHeight())
 		end
@@ -188,9 +188,9 @@ _Debug.overlay = function()
 	local w = love.graphics.getWidth()
 	local h = love.graphics.getHeight()
 	local R, G, B = unpack(_DebugSettings.OverlayColor)
-	love.graphics.setColor(R, G, B, 220)
+	love.graphics.setColor(R, G, B, 0.86)
 	love.graphics.rectangle("fill", 0, 0, w, h)
-	love.graphics.setColor(255/255, 255/255, 255/255)
+	love.graphics.setColor(1, 1, 1)
 	love.graphics.setFont(_Debug.Font)
 	local count = 0
 	local cutY = 0
@@ -219,11 +219,11 @@ _Debug.overlay = function()
 		local err, index = _Debug.lineInfo(v) --Obtain message and type
 		local msg = err and _Debug.errors[index] or _Debug.prints[index]
 		if err then --Add a red and fancy prefix
-			love.graphics.setColor(255/255, 0, 0)
+			love.graphics.setColor(1, 0, 0)
 			love.graphics.print("[Error]", x, y)
 			x = 50
 		end
-		love.graphics.setColor(255/255, 255/255, 255/255)
+		love.graphics.setColor(1, 1, 1)
 		love.graphics.print(msg, x, y)
 	end
 	love.graphics.setScissor()
@@ -235,16 +235,16 @@ _Debug.overlay = function()
 	if #_Debug.Proposals > 0 then
 		autocomplete_width = _Debug.Font:getWidth(_Debug.Proposals[_Debug.proposaltoenter])
 		local proposal_prefix_width = _Debug.Font:getWidth(_Debug.Proposal_String)
-		love.graphics.setColor(127/255, 127/255, 127/255)
+		love.graphics.setColor(0.5, 0.5, 0.5)
 		love.graphics.print(_Debug.Proposals[_Debug.proposaltoenter], 20 + input_prefix_width, h - 27)
-		love.graphics.setColor(70/255, 70/255, 70/255)
+		love.graphics.setColor(0.275, 0.275, 0.275)
 		for i = math.max(_Debug.proposaltoenter - 1, 1), math.min(_Debug.proposaltoenter + 1, #_Debug.Proposals) do
 			if i ~= _Debug.proposaltoenter then
 				local index = i - _Debug.proposaltoenter
 				love.graphics.print(_Debug.Proposal_String .. _Debug.Proposals[i], 20 + input_prefix_width - proposal_prefix_width, h - 27 - (fontSize - 1) * index)
 			end
 		end
-		love.graphics.setColor(255/255, 255/255, 255/255)
+		love.graphics.setColor(1, 1, 1)
 	end
 	if _Debug.drawTick then
 		love.graphics.print("_", 20 + input_prefix_width, h - 27)
@@ -302,7 +302,7 @@ _Debug.keyConvert = function(key)
 		if #_Debug.Proposals > 0 and not love.keyboard.isDown('lshift', 'rshift') then
 			_Debug.proposaltoenter = _Debug.proposaltoenter % #_Debug.Proposals + 1
 			_Debug.resetProposals = false
-		else 
+		else
 			if _Debug.historyIndex > 1 then
 				if _Debug.historyIndex == #_Debug.history then
 					_Debug.history[_Debug.historyIndex] = _Debug.input
@@ -318,7 +318,7 @@ _Debug.keyConvert = function(key)
 		if #_Debug.Proposals > 0 and not love.keyboard.isDown('lshift', 'rshift') then
 			_Debug.proposaltoenter = (_Debug.proposaltoenter - 2) % #_Debug.Proposals + 1
 			_Debug.resetProposals = false
-		else 
+		else
 			if _Debug.historyIndex < #_Debug.history then
 				_Debug.historyIndex = _Debug.historyIndex + 1
 				_Debug.input = _Debug.history[_Debug.historyIndex]
@@ -340,7 +340,7 @@ _Debug.keyConvert = function(key)
 		end
 	elseif key == 'f5' then
 		_Debug.liveDo=true
-	elseif key == "return" then 
+	elseif key == "return" then
 		if _Debug.input == 'clear' then --Clears the console
 			_Debug.history[#_Debug.history] = _Debug.input
 			table.insert(_Debug.history, '')
@@ -363,13 +363,13 @@ _Debug.keyConvert = function(key)
 			prevmod = _Debug.liveLastModified
 			liveflag=true
 		end
-		
+
 		--Execute Script
 		print("> " .. _Debug.input)
 		_Debug.history[#_Debug.history] = _Debug.input
 		table.insert(_Debug.history, '')
 		_Debug.historyIndex = #_Debug.history
-	 
+
 		local f, err = loadstring(_Debug.input)
 		if f then
 			--f = xpcall(f,_Debug.handleError)
@@ -390,7 +390,7 @@ _Debug.keyConvert = function(key)
 		_Debug.tick = 0
 		_Debug.drawTick = false
 		--
-		
+
 		if liveflag then -- Setting up lastModified for the new live file(s) if changed
 			if type(_DebugSettings.LiveFile) == 'table' then
 				_Debug.liveLastModified={}
@@ -500,7 +500,7 @@ _Debug.findLocation = function(str)
 			return
 		end
 	end
-	
+
 	_Debug.ProposalLocation = curTable
 	_Debug.Proposal_String = lastname
 end
@@ -596,7 +596,7 @@ _Debug.hotSwapUpdate = function(dt,file)
 		output = chunk .. '\n'
     end
     ok,err = xpcall(chunk, _Debug.handleError)
-	
+
 	if ok then
 		print("'"..file.."' Reloaded.")
 	else
@@ -605,7 +605,7 @@ _Debug.hotSwapUpdate = function(dt,file)
 	if _Debug.orderOffset < #_Debug.order - _Debug.lastRows + 1 then
 		_Debug.orderOffset = #_Debug.order - _Debug.lastRows + 1
 	end
-	
+
 	if file == 'main' then --so it only updates love.update() once
 		updateok,err=pcall(love.update,dt)
 	end
@@ -632,7 +632,7 @@ _Debug.liveCheckLastModified = function(table1,table2)
 		end
 		return false
 	end
-	
+
 	for i,v in ipairs(table1) do
 		if love.filesystem.getInfo(v) ~= table2[i] then
 			return true
@@ -640,23 +640,23 @@ _Debug.liveCheckLastModified = function(table1,table2)
 	end
 	return false
 end
-	
-	
+
+
 
 --Modded version of original love.run
 _G["love"].run = function()
 	if love.math then
 		love.math.setRandomSeed(os.time())
 	end
-	
+
 	if love.event then
 		love.event.pump()
 	end
-	
+
 	if love.load then xpcall(love.load, _Debug.handleError) end
 
 	if love.timer then love.timer.step() end
-	
+
 	local dt = 0
 
 
@@ -687,7 +687,7 @@ _G["love"].run = function()
 					end
 					if name == "keypressed" then --Keypress
 						skipEvent = true
-						
+
 						if string.len(a)>=2 or (love.keyboard.isDown('lctrl') and (a == 'c' or a == 'v')) then _Debug.handleKey(a) end
 						if not _Debug.drawOverlay then
 							if love.keypressed then love.keypressed(a,b) end
@@ -742,12 +742,12 @@ _G["love"].run = function()
 						end
 					end
 				end
-            	
+
             	-- Call love.update() if we are not to halt program execution
             	if _DebugSettings.HaltExecution == false then
                 	xpcall(function() love.update(dt) end, _Debug.handleError)
             	end
-            	
+
             	-- Auto scroll the console if AutoScroll == true
             	if _DebugSettings.AutoScroll == true then
                 	if _Debug.orderOffset < #_Debug.order - _Debug.lastRows + 1 then
@@ -755,7 +755,7 @@ _G["love"].run = function()
                 	end
             	end
 			end
-			
+
 			if love.update and not _Debug.drawOverlay then
 				if _DebugSettings.LiveAuto and _Debug.liveCheckLastModified(_DebugSettings.LiveFile,_Debug.liveLastModified) then
 					if type(_DebugSettings.LiveFile) == 'table' then
@@ -810,4 +810,3 @@ _G["love"].run = function()
 	end
 
 end
-
