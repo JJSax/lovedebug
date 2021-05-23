@@ -340,7 +340,7 @@ _Debug.keyConvert = function(key)
 		end
 	elseif key == 'f5' then
 		_Debug.liveDo=true
-	elseif key == "return" then
+	elseif key == "return" or key == "kpenter"  then
 		if _Debug.input == 'clear' then --Clears the console
 			_Debug.history[#_Debug.history] = _Debug.input
 			table.insert(_Debug.history, '')
@@ -720,8 +720,9 @@ _G["love"].run = function()
 			end
 			if _Debug.drawOverlay then
 				for key, d in pairs(_Debug.trackKeys) do
+					-- local _key = key
 					if type(key) == 'string' and key ~= " " then
-						if love.keyboard.isDown(key:lower()) then
+						if not key:find("[{}~|]") and love.keyboard.isDown(key:lower()) then
 							d.time = d.time + dt
 							if d.time >= _Debug.keyRepeatInterval then
 								d.time = 0
