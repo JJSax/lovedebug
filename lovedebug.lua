@@ -332,18 +332,45 @@ _Debug.keyConvert = function(key)
 		if _Debug.inputMarker == 0 then --Keep the input from copying itself
 			suffix = ""
 		end
-		_Debug.input = _Debug.input:sub(1, _Debug.inputMarker - 1) .. suffix
-		if _Debug.inputMarker > 0 then
-			_Debug.inputMarker = _Debug.inputMarker - 1
-			_Debug.tick = 0
-			_Debug.drawTick = false
+		if love.keyboard.isDown("lctrl", "rctrl") then -- backspace word
+			local total = _Debug.input:len()
+			_Debug.input = _Debug.input:gsub("(.*)%s.*$","%1")
+			if _Debug.input:len() == total then
+				_Debug.input = ""
+			end
+			_Debug.inputMarker = _Debug.inputMarker - (total - _Debug.input:len())
+		else
+			_Debug.input = _Debug.input:sub(1, _Debug.inputMarker - 1) .. suffix
+			if _Debug.inputMarker > 0 then
+				_Debug.inputMarker = _Debug.inputMarker - 1
+				_Debug.tick = 0
+				_Debug.drawTick = false
+			end
 		end
 	elseif key == "delete" then
-		local suffix = _Debug.input:sub(_Debug.inputMarker + 2, #_Debug.input)
-		local prefix = _Debug.input:sub(1, _Debug.inputMarker)
-		_Debug.input = prefix..suffix
+		if love.keyboard.isDown("lctrl", "rctrl") then
+			local prefix = string.sub(_Debug.input, 1, _Debug.inputMarker)
+			local markerToEnd = string.sub(_Debug.input, _Debug.inputMarker+1)
+			local space, lastSpace = markerToEnd:find("%s+")
+			if space == 1 then
+				markerToEnd = markerToEnd:sub(lastSpace+1, #markerToEnd) -- strip starting spaces
+				_Debug.input = prefix..markerToEnd
+			end
+			if space == lastSpace then -- if only single space removed.
+				space = markerToEnd:find("%s+")
+				if space then -- if there is a space after inputMarker
+					_Debug.input = prefix.." "..markerToEnd:sub(space+1, #markerToEnd)
+				else
+					_Debug.input = prefix
+				end
+			end
+		else
+			local suffix = _Debug.input:sub(_Debug.inputMarker + 2, #_Debug.input)
+			local prefix = _Debug.input:sub(1, _Debug.inputMarker)
+			_Debug.input = prefix..suffix
+		end
 	elseif key == 'f5' then
-		_Debug.liveDo=true
+		_Debug.liveDo = true
 	elseif key == "return" or key == "kpenter"  then
 		if _Debug.input == 'clear' then --Clears the console
 			_Debug.history[#_Debug.history] = _Debug.input
@@ -816,3 +843,4 @@ _G["love"].run = function()
 	end
 
 end
+
