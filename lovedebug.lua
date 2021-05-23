@@ -57,14 +57,14 @@ _DebugSettings.Settings = function()
 	print("Settings:")
 
 	print("   _DebugSettings.MultipleErrors  [Boolean]  Controls if errors should appear multiple times, default is false")
-	print("   _DebugSettings.OverlayColor  [{int, int, int}]  Sets the color of the overlay, default is {0,0,0}")
+	print("   _DebugSettings.OverlayColor  [{float, float, float}]  Sets the color of the overlay, default is {0,0,0}")
 	print("   _DebugSettings.LiveAuto  [Boolean]  Check if the code should be reloaded when it's modified, default is false")
 	print("   _DebugSettings.LiveFile  [String]  Sets the file that lovedebug reloads, default is 'main.lua'")
 	print("   _DebugSettings.LiveFile  [{String,String,...}]  Sets the files, has a table, that lovedebug reloads, can be multiple")
-	print("   _DebugSettings.LiveReset  [Boolean]  Rather or not love.load() should be reloaded if the code is HotSwapped, default is false")
+	print("   _DebugSettings.LiveReset  [Boolean]  Whether or not love.load() should be reloaded if the code is HotSwapped, default is false")
 	print("   _DebugSettings.DrawOnTop  [Boolean]  If the errors and prints should be dispalyed on top of the screen, default is false")
-	print("   _DebugSettings.HaltExecution  [Boolean]  Rather or not to halt program execution while console is open, default is true")
-	print("   _DebugSettings.AutoScroll  [Boolean]  Rather or not to auto scroll the console once output fills up the console, default is false")
+	print("   _DebugSettings.HaltExecution  [Boolean]  Whether or not to halt program execution while console is open, default is true")
+	print("   _DebugSettings.AutoScroll  [Boolean]  Whether or not to auto scroll the console once output fills up the console, default is false")
 end
 
 
