@@ -338,6 +338,10 @@ _Debug.keyConvert = function(key)
 			_Debug.tick = 0
 			_Debug.drawTick = false
 		end
+	elseif key == "delete" then
+		local suffix = _Debug.input:sub(_Debug.inputMarker + 2, #_Debug.input)
+		local prefix = _Debug.input:sub(1, _Debug.inputMarker)
+		_Debug.input = prefix..suffix
 	elseif key == 'f5' then
 		_Debug.liveDo=true
 	elseif key == "return" or key == "kpenter"  then
