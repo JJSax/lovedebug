@@ -79,7 +79,7 @@ _G["print"] = function(...)
 	for i = 1, select('#', ...) do
 		str[i] = tostring(select(i, ...))
 	end
-	table.insert(_Debug.prints, table.concat(str, "       "))
+	table.insert(_Debug.prints, str)--table.concat(str, "       "))
 	table.insert(_Debug.order, "p" .. tostring(#_Debug.prints))
 	table.insert(_Debug.onTopFeed, {"p" .. tostring(#_Debug.prints),0})
 end
@@ -505,6 +505,14 @@ _Debug.findLocation = function(str)
 	_Debug.Proposal_String = lastname
 end
 
+local function addKeyToTrack(key)
+	if not _Debug.trackKeys[key] then
+		if pcall(love.keyboard.isDown, key) then -- only add valid keys
+			_Debug.trackKeys[key] = { time = _Debug.keyRepeatInterval - _Debug.keyRepeatDelay}
+		end
+	end
+end
+
 --Handle Keypresses
 _Debug.handleKey = function(a)
 	local activekey = love.system.getOS()~='Android' and (_lovedebugpresskey or "f8") or 'menu'
@@ -524,15 +532,11 @@ _Debug.handleKey = function(a)
 				 return
 			else
 				_Debug.handleVirtualKey(a)
-				if not _Debug.trackKeys[a] then
-					_Debug.trackKeys[a] = { time = _Debug.keyRepeatInterval - _Debug.keyRepeatDelay}
-				end
+				addKeyToTrack(a)
 			end
 		else
 			_Debug.handleVirtualKey(a)
-			if not _Debug.trackKeys[a] then
-				_Debug.trackKeys[a] = { time = _Debug.keyRepeatInterval - _Debug.keyRepeatDelay}
-			end
+			addKeyToTrack(a)
 		end
 	end
 end
@@ -564,9 +568,7 @@ _Debug.handleVirtualKey = function(a)
 			_Debug.drawTick = false
 			_Debug.handlePast(a[i])
 		end
-		if not _Debug.trackKeys[a] then
-			_Debug.trackKeys[a] = { time = _Debug.keyRepeatInterval - _Debug.keyRepeatDelay}
-		end
+		addKeyToTrack(a)
 	end
 end
 _Debug.handlePast = function(add)
@@ -720,9 +722,8 @@ _G["love"].run = function()
 			end
 			if _Debug.drawOverlay then
 				for key, d in pairs(_Debug.trackKeys) do
-					-- local _key = key
 					if type(key) == 'string' and key ~= " " then
-						if not key:find("[{}~|]") and love.keyboard.isDown(key:lower()) then
+						if love.keyboard.isDown(key:lower()) then
 							d.time = d.time + dt
 							if d.time >= _Debug.keyRepeatInterval then
 								d.time = 0
