@@ -288,15 +288,41 @@ _Debug.keyConvert = function(key)
 		return key
 	elseif key == "left" then
 		if _Debug.inputMarker > 0 then
-			_Debug.inputMarker = _Debug.inputMarker - 1
-			_Debug.tick = 0
-			_Debug.drawTick = false
+			if love.keyboard.isDown("lctrl", "rctrl") then -- backspace word
+				local prefix = _Debug.input:sub(1, _Debug.inputMarker)
+				local newPrefix = prefix:gsub("(.*)%s.*$","%1")
+				_Debug.inputMarker = #newPrefix
+				if newPrefix == prefix then -- if no space before inputMarker
+					_Debug.inputMarker = 0
+				end
+			else
+				_Debug.inputMarker = _Debug.inputMarker - 1
+				_Debug.tick = 0
+				_Debug.drawTick = false
+			end
 		end
 	elseif key == "right" then
 		if _Debug.inputMarker < #_Debug.input then
-			_Debug.inputMarker = _Debug.inputMarker + 1
-			_Debug.tick = 0
-			_Debug.drawTick = false
+			if love.keyboard.isDown('lctrl', 'rctrl') then
+				local prefix = string.sub(_Debug.input, 1, _Debug.inputMarker)
+				local suffix = string.sub(_Debug.input, _Debug.inputMarker+1)
+				local space, lastSpace = suffix:find("%s+")
+				if space == 1 then
+					_Debug.inputMarker = _Debug.inputMarker + lastSpace
+				end
+				if space == lastSpace then -- if only single space removed.
+					space = suffix:find("%s+")
+					if space then -- if there is a space after inputMarker
+						_Debug.inputMarker = #prefix + space
+					else
+						_Debug.inputMarker = #_Debug.input
+					end
+				end
+			else
+				_Debug.inputMarker = _Debug.inputMarker + 1
+				_Debug.tick = 0
+				_Debug.drawTick = false
+			end
 		end
 	elseif key == "up" then
 		if #_Debug.Proposals > 0 and not love.keyboard.isDown('lshift', 'rshift') then
