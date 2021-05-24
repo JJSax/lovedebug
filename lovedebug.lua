@@ -328,17 +328,18 @@ _Debug.keyConvert = function(key)
 			end
 		end
 	elseif key == "backspace" then
+		if _Debug.inputMarker == 0 then return end
+		local prefix = _Debug.input:sub(1, _Debug.inputMarker)
 		local suffix = _Debug.input:sub(_Debug.inputMarker + 1, #_Debug.input)
-		if _Debug.inputMarker == 0 then --Keep the input from copying itself
-			suffix = ""
-		end
 		if love.keyboard.isDown("lctrl", "rctrl") then -- backspace word
-			local total = _Debug.input:len()
-			_Debug.input = _Debug.input:gsub("(.*)%s.*$","%1")
-			if _Debug.input:len() == total then
-				_Debug.input = ""
+			local newPrefix = prefix:gsub("(.*)%s.*$","%1")
+			if newPrefix == prefix then -- if no space before inputMarker
+				_Debug.input = suffix
+				_Debug.inputMarker = 0
+				return
 			end
-			_Debug.inputMarker = _Debug.inputMarker - (total - _Debug.input:len())
+			_Debug.input = newPrefix.." "..suffix
+			_Debug.inputMarker = #newPrefix
 		else
 			_Debug.input = _Debug.input:sub(1, _Debug.inputMarker - 1) .. suffix
 			if _Debug.inputMarker > 0 then
