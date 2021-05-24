@@ -377,16 +377,16 @@ _Debug.keyConvert = function(key)
 	elseif key == "delete" then
 		if love.keyboard.isDown("lctrl", "rctrl") then
 			local prefix = string.sub(_Debug.input, 1, _Debug.inputMarker)
-			local markerToEnd = string.sub(_Debug.input, _Debug.inputMarker+1)
-			local space, lastSpace = markerToEnd:find("%s+")
+			local suffix = string.sub(_Debug.input, _Debug.inputMarker+1)
+			local space, lastSpace = suffix:find("%s+")
 			if space == 1 then
-				markerToEnd = markerToEnd:sub(lastSpace+1, #markerToEnd) -- strip starting spaces
-				_Debug.input = prefix..markerToEnd
+				suffix = suffix:sub(lastSpace+1, #suffix) -- strip starting spaces
+				_Debug.input = prefix..suffix
 			end
 			if space == lastSpace then -- if only single space removed.
-				space = markerToEnd:find("%s+")
+				space = suffix:find("%s+")
 				if space then -- if there is a space after inputMarker
-					_Debug.input = prefix.." "..markerToEnd:sub(space+1, #markerToEnd)
+					_Debug.input = prefix.." "..suffix:sub(space+1, #suffix)
 				else
 					_Debug.input = prefix
 				end
